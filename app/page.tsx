@@ -1,65 +1,104 @@
-import Image from "next/image";
+"use client";
+
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { UrlInput } from "@/components/url-input";
+import { DeviceFrame } from "@/components/device-frame";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { DEVICE_SPECS } from "@/lib/device-specs";
+import { Monitor } from "lucide-react";
+
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [currentUrl, setCurrentUrl] = useState("");
+
+  // Load URL from query params on mount
+  useEffect(() => {
+    const urlParam = searchParams.get("url");
+    if (urlParam) {
+      setCurrentUrl(urlParam);
+    }
+  }, [searchParams]);
+
+  const handleUrlLoad = (url: string) => {
+    setCurrentUrl(url);
+
+    // Update URL query params
+    const params = new URLSearchParams(searchParams.toString());
+    if (url) {
+      params.set("url", url);
+    } else {
+      params.delete("url");
+    }
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const handleDeviceUrlChange = (newUrl: string) => {
+    // Sync all devices and UrlInput when one device navigates
+    setCurrentUrl((prev) => {
+      if (prev !== newUrl) {
+        return newUrl;
+      } else {
+        // Force update to trigger reload even if URL is the same
+        return "";
+      }
+    });
+
+    // Always update URL query params
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("url", newUrl);
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  return (
+    <div className="min-h-screen bg-background overflow-hidden">
+      <div className="w-full">
+        {/* Compact Header */}
+        <div className="border-b bg-card">
+          <div className="flex items-center justify-between px-4 py-2">
+            <div className="flex items-center gap-2">
+              <Monitor className="h-4 w-4 text-muted-foreground" />
+              <h1 className="text-sm font-semibold">Device Viewport Tester</h1>
+            </div>
+            <ThemeToggle />
+          </div>
+
+          {/* URL Input */}
+          <div className="px-4 pb-2">
+            <UrlInput onUrlLoad={handleUrlLoad} initialUrl={currentUrl} />
+          </div>
+
+          {/* Compact Browser Warning */}
+          {!currentUrl && (
+            <div className="mx-4 mb-2 rounded border border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/30 px-3 py-2">
+              <p className="text-xs text-amber-800 dark:text-amber-300">
+                <strong>Note:</strong> Brave/Firefox users may need to disable Shields. For your own sites: viewport injection works for same-origin only. External sites use their own responsive design.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Device Row - Full Width */}
+        <div className="flex gap-2 p-2 overflow-x-auto">
+          {DEVICE_SPECS.map((device) => (
+            <DeviceFrame
+              key={device.id}
+              device={device}
+              url={currentUrl}
+              onUrlChange={handleDeviceUrlChange}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
