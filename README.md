@@ -4,11 +4,12 @@ A modern Next.js application for testing webpages across multiple device viewpor
 
 ## Features
 
-- **Multi-Device Testing**: Test your websites on 4 popular device viewports at once:
-  - iPhone 15 Pro (393×852px)
+- **Multi-Device Testing**: Test your websites on 5 popular device viewports at once:
   - Samsung Galaxy S24 (360×800px)
-  - iPad Air (820×1180px)
+  - iPhone 15 Pro (393×852px)
   - Google Pixel 8 (412×915px)
+  - iPad Air (820×1180px)
+  - MacBook Air 13" (1440×900px)
 
 - **URL Input & Validation**: Enter any URL with automatic protocol detection and validation
 
