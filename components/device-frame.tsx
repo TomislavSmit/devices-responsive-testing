@@ -85,7 +85,7 @@ export function DeviceFrame({ device, url, onUrlChange }: DeviceFrameProps) {
             }
           }
         }
-      } catch (e) {
+      } catch {
         // Cross-origin - can't access iframe URL
       }
     };
@@ -104,7 +104,7 @@ export function DeviceFrame({ device, url, onUrlChange }: DeviceFrameProps) {
     try {
       iframe.contentWindow?.addEventListener('popstate', checkIframeUrl);
       iframe.contentWindow?.addEventListener('hashchange', checkIframeUrl);
-    } catch (e) {
+    } catch {
       // Cross-origin - can't add listeners
     }
 
@@ -114,7 +114,7 @@ export function DeviceFrame({ device, url, onUrlChange }: DeviceFrameProps) {
       try {
         iframe.contentWindow?.removeEventListener('popstate', checkIframeUrl);
         iframe.contentWindow?.removeEventListener('hashchange', checkIframeUrl);
-      } catch (e) {
+      } catch {
         // Cross-origin cleanup
       }
     };
@@ -137,11 +137,11 @@ export function DeviceFrame({ device, url, onUrlChange }: DeviceFrameProps) {
         const iframeDoc = iframe.contentDocument;
 
         // Check if viewport meta tag exists
-        let viewportMeta = iframeDoc.querySelector('meta[name="viewport"]');
+        let viewportMeta = iframeDoc.querySelector('meta[name="viewport"]') as HTMLMetaElement | null;
 
         if (!viewportMeta) {
           // Create and inject viewport meta tag
-          viewportMeta = iframeDoc.createElement('meta');
+          viewportMeta = iframeDoc.createElement('meta') as HTMLMetaElement;
           viewportMeta.name = 'viewport';
           viewportMeta.content = `width=${device.width}, initial-scale=1.0, maximum-scale=1.0, user-scalable=no`;
 
@@ -177,7 +177,7 @@ export function DeviceFrame({ device, url, onUrlChange }: DeviceFrameProps) {
 
   return (
     <div
-      className="flex-shrink-0 border rounded-lg bg-card overflow-hidden"
+      className="shrink-0 border rounded-lg bg-card overflow-hidden"
       style={{
         width: `${device.width}px`,
       }}
@@ -229,9 +229,9 @@ export function DeviceFrame({ device, url, onUrlChange }: DeviceFrameProps) {
 
               {error && (
                 <div className="absolute inset-0 flex items-center justify-center bg-background z-10 p-2">
-                  <div className="flex flex-col gap-1 rounded border border-destructive bg-destructive/10 p-2 max-w-[280px]">
+                  <div className="flex flex-col gap-1 rounded border border-destructive bg-destructive/10 p-2 max-w-70">
                     <div className="flex items-start gap-1.5">
-                      <AlertCircle className="h-3 w-3 text-destructive mt-0.5 flex-shrink-0" />
+                      <AlertCircle className="h-3 w-3 text-destructive mt-0.5 shrink-0" />
                       <p className="text-[10px] text-destructive leading-tight font-medium">
                         {errorMessage || "Failed to load"}
                       </p>
