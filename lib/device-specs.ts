@@ -23,16 +23,16 @@ export const DEVICE_SPECS: DeviceSpec[] = [
     hasNotch: false,
     borderRadius: 40,
   },
-  {
-    id: "iphone-15-pro",
-    name: "iPhone 15 Pro",
-    width: 393,
-    height: 852,
-    userAgent:
-      "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
-    hasNotch: true,
-    borderRadius: 55,
-  },
+  // {
+  //   id: "iphone-15-pro",
+  //   name: "iPhone 15 Pro",
+  //   width: 393,
+  //   height: 852,
+  //   userAgent:
+  //     "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+  //   hasNotch: true,
+  //   borderRadius: 55,
+  // },
   {
     id: "google-pixel-8",
     name: "Google Pixel 8",
@@ -52,6 +52,16 @@ export const DEVICE_SPECS: DeviceSpec[] = [
       "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
     hasNotch: false,
     borderRadius: 18,
+  },
+  {
+    id: "macbook-air-13",
+    name: "MacBook Air 13\"",
+    width: 1440,
+    height: 900,
+    userAgent:
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    hasNotch: false,
+    borderRadius: 8,
   },
 ];
 
