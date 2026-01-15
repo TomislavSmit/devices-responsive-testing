@@ -78,7 +78,22 @@ export function isValidUrl(url: string): boolean {
 }
 
 /**
- * Ensures URL has a protocol
+ * Checks if a URL will cause mixed content issues (HTTP on HTTPS page)
+ */
+export function isMixedContent(url: string): boolean {
+  if (typeof window === 'undefined') return false;
+  
+  try {
+    const urlObj = new URL(url);
+    const isSecureContext = window.location.protocol === 'https:';
+    return isSecureContext && urlObj.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Ensures URL has a protocol (defaults to https://)
  */
 export function normalizeUrl(url: string): string {
   if (!url) return "";

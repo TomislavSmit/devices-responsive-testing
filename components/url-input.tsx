@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { isValidUrl, normalizeUrl } from "@/lib/device-specs";
-import { AlertCircle, Globe } from "lucide-react";
+import { isValidUrl, normalizeUrl, isMixedContent } from "@/lib/device-specs";
+import { AlertCircle, Globe, AlertTriangle } from "lucide-react";
 
 interface UrlInputProps {
   onUrlLoad: (url: string) => void;
@@ -15,6 +15,7 @@ interface UrlInputProps {
 export function UrlInput({ onUrlLoad, initialUrl }: UrlInputProps) {
   const [url, setUrl] = useState(initialUrl || "");
   const [error, setError] = useState("");
+  const [warning, setWarning] = useState("");
 
   // Update input when initialUrl changes (from query params or device navigation)
   useEffect(() => {
@@ -38,6 +39,14 @@ export function UrlInput({ onUrlLoad, initialUrl }: UrlInputProps) {
     }
 
     setError("");
+    
+    // Check for mixed content
+    if (isMixedContent(normalizedUrl)) {
+      setWarning("HTTP sites cannot be loaded on HTTPS pages due to browser security. To test HTTP/localhost sites, run this app locally.");
+    } else {
+      setWarning("");
+    }
+    
     onUrlLoad(normalizedUrl);
   };
 
@@ -73,6 +82,13 @@ export function UrlInput({ onUrlLoad, initialUrl }: UrlInputProps) {
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      
+      {warning && (
+        <Alert className="border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>{warning}</AlertDescription>
         </Alert>
       )}
     </div>
